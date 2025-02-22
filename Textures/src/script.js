@@ -1,52 +1,15 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
-/**
- * Base
- */
-// Canvas
-const canvas = document.querySelector('canvas.webgl')
-
-// const image = new Image();
-// const texture = new THREE.Texture(image);
-// texture.colorSpace = THREE.SRGBColorSpace;
-// image.onload = () => {
-//     console.log("image loaded");
-//     texture.needsUpdate = true;
-// }
-// image.src = '/textures/door/color.jpg'
-const loadingManager = new THREE.LoadingManager();
-// const colorTexture = new THREE.TextureLoader(loadingManager).load('/textures/door/color.jpg');
-// const colorTexture = new THREE.TextureLoader(loadingManager).load('/textures/checkerboard-1024x1024.png');
-// const colorTexture = new THREE.TextureLoader(loadingManager).load('/textures/checkerboard-8x8.png');
-// const colorTexture = new THREE.TextureLoader(loadingManager).load('/textures/minecraft.png');
-const colorTexture = new THREE.TextureLoader(loadingManager).load('/textures/Moon.png');
-// console.log(moon);
-
-colorTexture.colorSpace = THREE.SRGBColorSpace;
-// moon.colorSpace = THREE.SRGBColorSpace;
-// colorTexture.repeat.x = 2;
-// colorTexture.repeat.y = 3;
-// colorTexture.wrapS = THREE.RepeatWrapping
-// colorTexture.wrapT = THREE.RepeatWrapping
-
-// colorTexture.offset.x = 0.5
-// colorTexture.offset.y = 0.5
-
-// colorTexture.rotation = Math.PI * 0.25
-// colorTexture.center.x = 0.5
-// colorTexture.center.y = 0.5
-
-// colorTexture.minFilter = THREE.NearestFilter;
-colorTexture.generateMipmaps = false;
-colorTexture.magFilter = THREE.NearestFilter;
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 
-loadingManager.onStart = () => {
-    console.log("OnStart");
-}
+// load image
+const loadingManager = new THREE.LoadingManager;
+const texture = new THREE.TextureLoader(loadingManager).load('/textures/Moon.png');
+
+texture.colorSpace = THREE.SRGBColorSpace;
+
 loadingManager.onLoad = () => {
-    console.log("onLoaded");
+    console.log("onLoad");
 }
 loadingManager.onProgress = () => {
     console.log("onProgress");
@@ -55,30 +18,24 @@ loadingManager.onError = () => {
     console.log("onError");
 }
 
-// Scene
-const scene = new THREE.Scene()
+texture.generateMipmaps = false;
+texture.magFilter = THREE.NearestFilter;
 
-/**
- * Object
- */
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-// console.log(geometry.attributes.uv);
+// CREATE SCENE
+const scene = new THREE.Scene();
 
-// const geometry = new THREE.TorusGeometry(0.7, 0.25, 32, 100);
-// const geometry = new THREE.CapsuleGeometry(0.5, 0.7, 10, 20);
-// const geometry = new THREE.TorusKnotGeometry(0.5, 0.15, 40, 10, 4, 5);
-// const geometry = new THREE.ConeGeometry(1, 0.8, 35);
-const geometry = new THREE.SphereGeometry(1, 25, 16);
-const material = new THREE.MeshBasicMaterial({ map: colorTexture })
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+const canvas = document.querySelector('canvas.webgl');
 
-/**
- * Sizes
- */
+// create objects
+const goemetry = new THREE.SphereGeometry(1, 32, 15);
+const material = new THREE.MeshBasicMaterial({ map: texture });
+const mesh = new THREE.Mesh(goemetry, material);
+scene.add(mesh);
+
+// sizes
 const sizes = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
 }
 
 window.addEventListener('resize', () => {
@@ -95,32 +52,25 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-/**
- * Camera
- */
-// Base camera
+// create camera
+
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 1
 camera.position.y = 1
 camera.position.z = 1
-scene.add(camera)
+scene.add(camera);
 
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 
-/**
- * Renderer
- */
+// renderer
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas
 })
-renderer.setSize(sizes.width, sizes.height)
+
+renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-/**
- * Animate
- */
 const clock = new THREE.Clock()
 
 const tick = () => {
